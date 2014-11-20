@@ -15,10 +15,15 @@ use TYPO3\Flow\Annotations as Flow;
 class IncludeViewHelper extends \TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper {
 
 	/**
-	 * @var \TYPO3\Flow\Resource\ResourceManager
+	 * @var \TYPO3\Flow\Resource\Publishing\ResourcePublisher
 	 * @Flow\Inject
 	 */
-	protected $resourceManager;
+	protected $resourcePublisher;
+
+	/**
+	 * @var string
+	 */
+	protected $staticResourcePath = 'Packages/TYPO3.Twitter.Bootstrap/';
 
 	/**
 	 * Get the header include code for including Twitter Bootstrap on a page. If needed
@@ -37,19 +42,22 @@ class IncludeViewHelper extends \TYPO3\Fluid\Core\ViewHelper\AbstractViewHelper 
 	public function render($version, $minified = TRUE, $includeJQuery = FALSE, $jQueryVersion = '1.10.1') {
 		$content = sprintf(
 			'<link rel="stylesheet" href="%s" />' . PHP_EOL,
-			$this->resourceManager->getPublicPackageResourceUri('TYPO3.Twitter.Bootstrap', $version . '/css/bootstrap' . ($minified === TRUE ? '.min' : '') . '.css')
+			$this->resourcePublisher->getStaticResourcesWebBaseUri() .
+				$this->staticResourcePath . $version . '/css/bootstrap' . ($minified === TRUE ? '.min' : '') . '.css'
 		);
 
 		if ($includeJQuery === TRUE) {
 			$content .= sprintf(
 				'<script src="%s"></script>' . PHP_EOL,
-				$this->resourceManager->getPublicPackageResourceUri('TYPO3.Twitter.Bootstrap', 'Libraries/jQuery/jquery-' . $jQueryVersion . ($minified === TRUE ? '.min' : '') . '.js')
+				$this->resourcePublisher->getStaticResourcesWebBaseUri() .
+					$this->staticResourcePath . 'Libraries/jQuery/jquery-' . $jQueryVersion . ($minified === TRUE ? '.min' : '') . '.js'
 			);
 		}
 
 		$content .= sprintf(
 			'<script src="%s"></script>' . PHP_EOL,
-				$this->resourceManager->getPublicPackageResourceUri('TYPO3.Twitter.Bootstrap', $version . '/js/bootstrap' . ($minified === TRUE ? '.min' : '') . '.js')
+			$this->resourcePublisher->getStaticResourcesWebBaseUri() .
+				$this->staticResourcePath . $version . '/js/bootstrap' . ($minified === TRUE ? '.min' : '') . '.js'
 		);
 
 		return $content;
